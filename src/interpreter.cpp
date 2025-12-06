@@ -1,17 +1,11 @@
+#include "format.hpp" // IWYU pragma: export
 #include "interpreter.hpp"
 
-// Globals
+// Vector2
 
-static inline std::unordered_map<char, Token::Type> tokenTypes {
-   {' ', Token::empty}, {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide},
-   {'%', Token::modulo}, {'!', Token::logical_not}, {'`', Token::greaterThan}, {'>', Token::right}, {'<', Token::left},
-   {'^', Token::up}, {'v', Token::down}, {'?', Token::randomDirection}, {'_', Token::horizontalIf}, {'|', Token::verticalIf},
-   {'"', Token::stringmode}, {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'.', Token::outputInteger},
-   {',', Token::outputAscii}, {'#', Token::bridge}, {'g', Token::get}, {'p', Token::put}, {'&', Token::integerInput},
-   {'~', Token::asciiInput}, {'@', Token::terminate}
-};
-
-// Vector2 hash
+bool Vector2::operator==(const Vector2 &vector) const {
+   return x == vector.x && y == vector.y;
+}
 
 size_t Vector2::operator()(const Vector2 &vector) const {
    return std::hash<int>()(vector.x) ^ (std::hash<int>()(vector.y) << 1);
@@ -38,4 +32,56 @@ void Interpreter::lex(const std::string &code) {
       }
       lexPosition.x += 1;
    }
+}
+
+// Interpreter
+
+void Interpreter::run(const std::string &code) {
+   lex(code);
+
+   while (true) {
+      runCommand(map[position]);
+      forward();
+   }
+}
+
+void Interpreter::runCommand(Token command) {
+   if (stringmode && command.type != Token::stringmode) {
+      push(command.value);
+   } else {
+      assert(commands.contains(command.type), "Unknown command: {} - '{}'.", (int)command.type, command.value);
+      commands[command.type](command.value);
+   }
+}
+
+// Utility functions
+
+void Interpreter::forward() {
+   position.x += direction.x;
+   position.y += direction.y;
+}
+
+int Interpreter::pop() {
+   if (stack.empty()) {
+      return 0;
+   }
+
+   int value = stack.top();
+   stack.pop();
+   return value;
+}
+
+int Interpreter::top() {
+   if (stack.empty()) {
+      return 0;
+   }
+   return stack.top();
+}
+
+void Interpreter::push(int value) {
+   stack.push(value);
+}
+
+void Interpreter::assertStackSize(size_t minimum, char operatorc) {
+   assert(stack.size() >= minimum, "'{}': Expected stack size to be at least {}, but it is {} instead.", operatorc, minimum, stack.size());
 }

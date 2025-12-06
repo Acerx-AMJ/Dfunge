@@ -2,7 +2,7 @@
 #define TOKENS_HPP
 
 struct Token {
-   enum Type {
+   enum Type: char {
       empty, add, subtract, multiply, divide, modulo, logical_not, greaterThan,
       right, left, up, down, randomDirection, horizontalIf, verticalIf, stringmode,
       duplicate, swap, pop, outputInteger, outputAscii, bridge, get, put, integerInput,
