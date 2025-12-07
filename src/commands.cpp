@@ -1,5 +1,6 @@
 #include "format.hpp" // IWYU pragma: export
 #include "interpreter.hpp"
+#include <cmath>
 #include <limits>
 
 #ifdef __linux__
@@ -10,12 +11,15 @@
 // Globals
 
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
-   {' ', Token::empty}, {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide},
-   {'%', Token::modulo}, {'!', Token::logical_not}, {'`', Token::greaterThan}, {'>', Token::right}, {'<', Token::left},
-   {'^', Token::up}, {'v', Token::down}, {'?', Token::randomDirection}, {'_', Token::horizontalIf}, {'|', Token::verticalIf},
-   {'"', Token::stringmode}, {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'.', Token::outputInteger},
-   {',', Token::outputAscii}, {'#', Token::bridge}, {'g', Token::get}, {'p', Token::put}, {'&', Token::integerInput},
-   {'~', Token::asciiInput}, {'@', Token::terminate}
+   {' ', Token::empty},
+   {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {';', Token::rightCondition}, {'j', Token::leftCondition}, {'l', Token::upCondition}, {'k', Token::downCondition}, {'#', Token::bridge},
+   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power},
+   {'!', Token::logical_not}, {'`', Token::greaterThan},
+   {'"', Token::stringmode},
+   {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::get}, {'p', Token::put},
+   {'.', Token::outputInteger}, {',', Token::outputAscii},
+   {'&', Token::integerInput}, {'~', Token::asciiInput},
+   {'t', Token::ten}
 };
 
 // Init commands
@@ -24,7 +28,47 @@ Interpreter::Interpreter() {
    srand(time(nullptr));
    direction = {1, 0};
 
+   // Empty
+
    commands[Token::empty] = [](char) {};
+
+   // Movement commands
+
+   commands[Token::right] = [this](char) {
+      direction = {1, 0};
+   };
+   commands[Token::left] = [this](char) {
+      direction = {-1, 0};
+   };
+   commands[Token::up] = [this](char) {
+      direction = {0, -1};
+   };
+   commands[Token::down] = [this](char) {
+      direction = {0, 1};
+   };
+   commands[Token::rightCondition] = [this](char) {
+      if (pop()) {
+         direction = {1, 0};
+      }
+   };
+   commands[Token::leftCondition] = [this](char) {
+      if (pop()) {
+         direction = {-1, 0};
+      }
+   };
+   commands[Token::upCondition] = [this](char) {
+      if (pop()) {
+         direction = {0, -1};
+      }
+   };
+   commands[Token::downCondition] = [this](char) {
+      if (pop()) {
+         direction = {0, 1};
+      }
+   };
+   commands[Token::bridge] = [this](char) {
+      forward();   
+   };
 
    // Arithmetic commands
 
@@ -58,58 +102,21 @@ Interpreter::Interpreter() {
       assert(a != 0, "'{}': Attempted to divide '{}' by zero.", value, b);
       push(b % a);
    };
+   commands[Token::power] = [this](char value) {
+      assertStackSize(2, value);
+      int a = pop();
+      int b = pop();
+      push(std::pow(b, a));
+   };
 
    // Logical commands
 
-   commands[Token::logical_not] = [this](char value) {
-      assertStackSize(1, value);
+   commands[Token::logical_not] = [this](char) {
       push(!pop());
    };
    commands[Token::greaterThan] = [this](char value) {
       assertStackSize(2, value);
       push(pop() > pop());
-   };
-
-   // Movement commands
-
-   commands[Token::right] = [this](char) {
-      direction = {1, 0};
-   };
-   commands[Token::left] = [this](char) {
-      direction = {-1, 0};
-   };
-   commands[Token::up] = [this](char) {
-      direction = {0, -1};
-   };
-   commands[Token::down] = [this](char) {
-      direction = {0, 1};
-   };
-   commands[Token::randomDirection] = [this](char) {
-      int value = rand() % 4;
-
-      if (value == 0) {
-         direction = {1, 0};
-      } else if (value == 1) {
-         direction = {-1, 0};
-      } else if (value == 2) {
-         direction = {0, -1};
-      } else {
-         direction = {0, 1};
-      }
-   };
-   commands[Token::horizontalIf] = [this](char) {
-      if (pop() == 0) {
-         direction = {1, 0};
-      } else {
-         direction = {-1, 0};
-      }
-   };
-   commands[Token::verticalIf] = [this](char) {
-      if (pop() == 0) {
-         direction = {0, 1};
-      } else {
-         direction = {0, -1};
-      }
    };
 
    // String commands
@@ -132,22 +139,8 @@ Interpreter::Interpreter() {
    commands[Token::pop] = [this](char) {
       pop();
    };
-
-   // Output commands
-
-   commands[Token::outputInteger] = [this](char value) {
-      assertStackSize(1, value);
-      std::cout << pop(); 
-   };
-   commands[Token::outputAscii] = [this](char value) {
-      assertStackSize(1, value);
-      std::cout << static_cast<char>(pop());
-   };
-
-   // Misc. commands
-
-   commands[Token::bridge] = [this](char) {
-      forward();   
+   commands[Token::terminate] = [](char) {
+      std::exit(0);
    };
    commands[Token::get] = [this](char value) {
       assertStackSize(2, value);
@@ -166,8 +159,16 @@ Interpreter::Interpreter() {
       int v = pop();
       map[{x, y}] = {Token::empty, (char)v}; // Won't work as intended, purely teporary
    };
-   commands[Token::terminate] = [](char) {
-      std::exit(0);
+
+   // Output commands
+
+   commands[Token::outputInteger] = [this](char value) {
+      assertStackSize(1, value);
+      std::cout << pop(); 
+   };
+   commands[Token::outputAscii] = [this](char value) {
+      assertStackSize(1, value);
+      std::cout << static_cast<char>(pop());
    };
 
    // Input commands
@@ -193,7 +194,13 @@ Interpreter::Interpreter() {
       #endif
       push(ch);
    };
+
+   // Literal commands
+
    commands[Token::number] = [this](char value) {
       push(value - '0');
+   };
+   commands[Token::ten] = [this](char) {
+      push(10);
    };
 }

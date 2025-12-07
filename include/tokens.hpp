@@ -3,10 +3,15 @@
 
 struct Token {
    enum Type: char {
-      empty, add, subtract, multiply, divide, modulo, logical_not, greaterThan,
-      right, left, up, down, randomDirection, horizontalIf, verticalIf, stringmode,
-      duplicate, swap, pop, outputInteger, outputAscii, bridge, get, put, integerInput,
-      asciiInput, terminate, number
+      empty,
+      right, left, up, down, rightCondition, leftCondition, upCondition, downCondition, bridge,
+      add, subtract, multiply, divide, modulo, power,
+      logical_not, greaterThan,
+      stringmode,
+      duplicate, swap, pop, terminate, get, put,
+      outputInteger, outputAscii,
+      integerInput, asciiInput,
+      number, ten
    };
 
    Type type = Type::empty;
