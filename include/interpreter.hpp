@@ -27,6 +27,7 @@ struct Interpreter {
    std::unordered_map<Token::Type, std::function<void(char)>> commands;
 
    std::unordered_map<Vector2, Token, Vector2> map;
+   std::stack<Vector2> jumps;
    std::stack<int> stack;
 
    Vector2 position, direction;
@@ -49,6 +50,7 @@ struct Interpreter {
    // Utility functions
 
    void forward();
+   void back();
    int pop();
    int top();
    void push(int value);

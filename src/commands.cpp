@@ -13,6 +13,7 @@
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
    {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {';', Token::rightCondition}, {'j', Token::leftCondition}, {'l', Token::upCondition}, {'k', Token::downCondition}, {'#', Token::bridge},
+   {'J', Token::jump}, {'L', Token::jumpCondition}, {'R', Token::return_},
    {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power}, {'i', Token::increment}, {'d', Token::decrement},
    {'!', Token::logical_not}, {'`', Token::greaterThan}, {'=', Token::equals},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
@@ -67,7 +68,46 @@ Interpreter::Interpreter() {
       }
    };
    commands[Token::bridge] = [this](char) {
-      forward();   
+      forward();
+   };
+
+   // Jump commands
+
+   commands[Token::jump] = [this](char value) {
+      assertStackSize(2, value);
+      int y = pop();
+      int x = pop();
+
+      jumps.push(direction);
+      jumps.push(position);
+
+      position = {x, y};
+      back();
+   };
+   commands[Token::jumpCondition] = [this](char value) {
+      assertStackSize(3, value);
+      int y = pop();
+      int x = pop();
+      int condition = pop();
+
+      if (condition) {
+         jumps.push(direction);
+         jumps.push(position);
+
+         position = {x, y};
+         back();
+      }
+   };
+   commands[Token::return_] = [this](char) {
+      if (jumps.empty()) {
+         position = {-1, 0};
+         direction = {1, 0};
+      } else {
+         position = jumps.top();
+         jumps.pop();
+         direction = jumps.top();
+         jumps.pop();
+      }
    };
 
    // Arithmetic commands

@@ -67,6 +67,11 @@ void Interpreter::forward() {
    position.y += direction.y;
 }
 
+void Interpreter::back() {
+   position.x -= direction.x;
+   position.y -= direction.y;
+}
+
 int Interpreter::pop() {
    if (stack.empty()) {
       return 0;
