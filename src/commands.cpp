@@ -13,13 +13,13 @@
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
    {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {';', Token::rightCondition}, {'j', Token::leftCondition}, {'l', Token::upCondition}, {'k', Token::downCondition}, {'#', Token::bridge},
-   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power},
-   {'!', Token::logical_not}, {'`', Token::greaterThan},
+   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power}, {'i', Token::increment}, {'d', Token::decrement},
+   {'!', Token::logical_not}, {'`', Token::greaterThan}, {'=', Token::equals},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
    {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::get}, {'p', Token::put},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
    {'&', Token::integerInput}, {'~', Token::asciiInput}, {'q', Token::stringInput},
-   {'t', Token::ten},
+   {'t', Token::ten}, {'s', Token::getStackSize},
 };
 
 // Init commands
@@ -108,15 +108,28 @@ Interpreter::Interpreter() {
       int b = pop();
       push(std::pow(b, a));
    };
+   commands[Token::increment] = [this](char value) {
+      assertStackSize(1, value);
+      push(pop() + 1);
+   };
+   commands[Token::decrement] = [this](char value) {
+      assertStackSize(1, value);
+      push(pop() - 1);
+   };
 
    // Logical commands
 
-   commands[Token::logical_not] = [this](char) {
+   commands[Token::logical_not] = [this](char value) {
+      assertStackSize(1, value);
       push(!pop());
    };
    commands[Token::greaterThan] = [this](char value) {
       assertStackSize(2, value);
       push(pop() > pop());
+   };
+   commands[Token::equals] = [this](char value) {
+      assertStackSize(2, value);
+      push(pop() == pop());
    };
 
    // String commands
@@ -226,5 +239,8 @@ Interpreter::Interpreter() {
    };
    commands[Token::ten] = [this](char) {
       push(10);
+   };
+   commands[Token::getStackSize] = [this](char) {
+      push(stack.size());
    };
 }
