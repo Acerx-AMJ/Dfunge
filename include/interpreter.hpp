@@ -30,7 +30,8 @@ struct Interpreter {
    std::stack<int> stack;
 
    Vector2 position, direction;
-   bool stringmode = false;
+   bool stringmode = false, outputString = false, reverseString = false;
+   std::string temporaryString;
 
    // Init commands
 

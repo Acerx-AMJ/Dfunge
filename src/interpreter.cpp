@@ -47,7 +47,13 @@ void Interpreter::run(const std::string &code) {
 
 void Interpreter::runCommand(Token command) {
    if (stringmode && command.type != Token::stringmode) {
-      push(command.value);
+      if (reverseString) {
+         temporaryString.push_back(command.value);
+      } else if (outputString) {
+         std::cout << command.value;
+      } else {
+         push(command.value);
+      }
    } else {
       assert(commands.contains(command.type), "Unknown command: {} - '{}'.", (int)command.type, command.value);
       commands[command.type](command.value);

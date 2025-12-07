@@ -15,11 +15,11 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {';', Token::rightCondition}, {'j', Token::leftCondition}, {'l', Token::upCondition}, {'k', Token::downCondition}, {'#', Token::bridge},
    {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power},
    {'!', Token::logical_not}, {'`', Token::greaterThan},
-   {'"', Token::stringmode},
+   {'"', Token::stringmode}, {'r', Token::reverseStringMode},
    {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::get}, {'p', Token::put},
-   {'.', Token::outputInteger}, {',', Token::outputAscii},
-   {'&', Token::integerInput}, {'~', Token::asciiInput},
-   {'t', Token::ten}
+   {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
+   {'&', Token::integerInput}, {'~', Token::asciiInput}, {'q', Token::stringInput},
+   {'t', Token::ten},
 };
 
 // Init commands
@@ -122,7 +122,21 @@ Interpreter::Interpreter() {
    // String commands
 
    commands[Token::stringmode] = [this](char) {
+      if (stringmode) {
+         for (auto it = temporaryString.rbegin(); it != temporaryString.rend(); ++it) {
+            if (outputString) {
+               std::cout << *it;
+            } else {
+               push(*it);
+            }
+         }
+         temporaryString.clear();
+         outputString = reverseString = false;
+      }
       stringmode = !stringmode;
+   };
+   commands[Token::reverseStringMode] = [this](char) {
+      reverseString = !reverseString;
    };
 
    // Stack commands
@@ -170,6 +184,9 @@ Interpreter::Interpreter() {
       assertStackSize(1, value);
       std::cout << static_cast<char>(pop());
    };
+   commands[Token::outputString] = [this](char) {
+      outputString = !outputString;
+   };
 
    // Input commands
 
@@ -193,6 +210,13 @@ Interpreter::Interpreter() {
       char ch = getchar();
       #endif
       push(ch);
+   };
+   commands[Token::stringInput] = [this](char) {
+      std::string input;
+      std::getline(std::cin, input);
+      for (auto it = input.rbegin(); it != input.rend(); ++it) {
+         push(*it);
+      }
    };
 
    // Literal commands
