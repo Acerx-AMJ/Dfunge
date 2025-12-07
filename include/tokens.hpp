@@ -7,7 +7,7 @@ struct Token {
       right, left, up, down, rightCondition, leftCondition, upCondition, downCondition, bridge,
       jump, jumpCondition, return_,
       add, subtract, multiply, divide, modulo, power, increment, decrement,
-      logical_not, greaterThan, equals,
+      logical_not, greaterThan, equals, logical_or, logical_and,
       stringmode, reverseStringMode,
       duplicate, swap, pop, terminate, get, put, getRegister, putRegister,
       outputInteger, outputAscii, outputString,

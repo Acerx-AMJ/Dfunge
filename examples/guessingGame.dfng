@@ -1,0 +1,7 @@
+> t2u ? 0P 01J
+> o"Guess the number 0-100: "& 1P 02J
+> 1G 0G =k 1G 0G `k 06J
+      J40<     J50<
+> o"You guessed correctly!"t,o"Play again [y/n]: "~:,t, "y"=k@
+> o"Too low!"t, 01J                                      J00<
+> o"Too high!"t, 01J

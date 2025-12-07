@@ -15,7 +15,7 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {';', Token::rightCondition}, {'j', Token::leftCondition}, {'l', Token::upCondition}, {'k', Token::downCondition}, {'#', Token::bridge},
    {'J', Token::jump}, {'L', Token::jumpCondition}, {'R', Token::return_},
    {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power}, {'i', Token::increment}, {'d', Token::decrement},
-   {'!', Token::logical_not}, {'`', Token::greaterThan}, {'=', Token::equals},
+   {'!', Token::logical_not}, {'`', Token::greaterThan}, {'=', Token::equals}, {'_', Token::logical_and}, {'|', Token::logical_or},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
    {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::get}, {'p', Token::put}, {'G', Token::getRegister}, {'P', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
@@ -171,6 +171,14 @@ Interpreter::Interpreter() {
       assertStackSize(2, value);
       push(pop() == pop());
    };
+   commands[Token::logical_and] = [this](char value) {
+      assertStackSize(2, value);
+      push(pop() && pop());
+   };
+   commands[Token::logical_or] = [this](char value) {
+      assertStackSize(2, value);
+      push(pop() || pop());
+   };
 
    // String commands
 
@@ -262,7 +270,8 @@ Interpreter::Interpreter() {
    };
    commands[Token::asciiInput] = [this](char) {
       #ifdef __linux__
-      termios oldt {}, newt {};
+      termios oldt, newt;
+      tcgetattr(STDIN_FILENO, &oldt);
       newt = oldt;
       newt.c_lflag &= ~(ICANON | ECHO);
 
