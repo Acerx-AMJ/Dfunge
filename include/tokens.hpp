@@ -9,10 +9,10 @@ struct Token {
       add, subtract, multiply, divide, modulo, power, increment, decrement,
       logical_not, greaterThan, equals,
       stringmode, reverseStringMode,
-      duplicate, swap, pop, terminate, get, put,
+      duplicate, swap, pop, terminate, get, put, getRegister, putRegister,
       outputInteger, outputAscii, outputString,
       integerInput, asciiInput, stringInput,
-      number, ten, getStackSize,
+      number, ten, getStackSize, randomGenerator,
    };
 
    Type type = Type::empty;

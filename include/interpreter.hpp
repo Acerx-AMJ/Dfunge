@@ -27,6 +27,7 @@ struct Interpreter {
    std::unordered_map<Token::Type, std::function<void(char)>> commands;
 
    std::unordered_map<Vector2, Token, Vector2> map;
+   std::unordered_map<int, int> registers;
    std::stack<Vector2> jumps;
    std::stack<int> stack;
 

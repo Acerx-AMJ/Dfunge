@@ -17,10 +17,10 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power}, {'i', Token::increment}, {'d', Token::decrement},
    {'!', Token::logical_not}, {'`', Token::greaterThan}, {'=', Token::equals},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
-   {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::get}, {'p', Token::put},
+   {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::get}, {'p', Token::put}, {'G', Token::getRegister}, {'P', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
    {'&', Token::integerInput}, {'~', Token::asciiInput}, {'q', Token::stringInput},
-   {'t', Token::ten}, {'s', Token::getStackSize},
+   {'t', Token::ten}, {'s', Token::getStackSize}, {'?', Token::randomGenerator}
 };
 
 // Init commands
@@ -224,7 +224,17 @@ Interpreter::Interpreter() {
       int y = pop();
       int x = pop();
       int v = pop();
-      map[{x, y}] = {Token::empty, (char)v}; // Won't work as intended, purely teporary
+      map[{x, y}] = {tokenTypes[(char)v], (char)v};
+   };
+   commands[Token::getRegister] = [this](char value) {
+      assertStackSize(1, value);
+      push(registers[pop()]);
+   };
+   commands[Token::putRegister] = [this](char value) {
+      assertStackSize(2, value);
+      int r = pop();
+      int v = pop();
+      registers[r] = v;
    };
 
    // Output commands
@@ -282,5 +292,12 @@ Interpreter::Interpreter() {
    };
    commands[Token::getStackSize] = [this](char) {
       push(stack.size());
+   };
+   commands[Token::randomGenerator] = [this](char value) {
+      assertStackSize(1, value);
+      int max = pop();
+      int min = pop();
+      int result = min + (rand() % (max - min + 1));
+      push(result);
    };
 }
