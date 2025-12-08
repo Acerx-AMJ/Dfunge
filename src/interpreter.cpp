@@ -48,7 +48,24 @@ void Interpreter::run(const std::string &code) {
 }
 
 void Interpreter::runCommand(Token command) {
-   // Number is completed after numbermode
+   // Handle identifier mode
+   if (identifiermode && !std::isalnum(command.value) && command.value != '_') {
+      if (gettingVariable) {
+         assert(variables.contains(identifier), "Variable '{}' is not defined.", identifier);
+         push(variables[identifier]);
+      } else {
+         // Stack size checked in Token::define command
+         int a = pop();
+         variables[identifier] = a;
+      }
+      identifiermode = gettingVariable = false;
+      identifier.clear();
+   } else if (identifiermode) {
+      identifier += command.value;
+      return;
+   }
+
+   // Handle number mode
    if (numbermode && (hexadecimalNumber ? !isHexadecimal(command.value) : command.type != Token::number)) {
       if (command.value == 'X' && numberString.empty()) {
          hexadecimalNumber = true;
@@ -64,11 +81,13 @@ void Interpreter::runCommand(Token command) {
             raise("''': Cannot convert string '{}' to number. Number is too large.", numberString);
          }
       }
+   } else if (numbermode) {
+      numberString += command.value;
+      return;
    }
 
-   if (numbermode && (hexadecimalNumber ? isHexadecimal(command.value) : command.type == Token::number)) {
-      numberString += command.value;
-   } else if (stringmode && command.type != Token::stringmode) {
+   // Handle string mode
+   if (stringmode && command.type != Token::stringmode) {
       if (reverseString) {
          temporaryString.push_back(command.value);
       } else if (outputString) {
@@ -76,10 +95,12 @@ void Interpreter::runCommand(Token command) {
       } else {
          push(command.value);
       }
-   } else {
-      assert(commands.contains(command.type), "Unknown command: {} - '{}'.", (int)command.type, command.value);
-      commands[command.type](command.value);
+      return;
    }
+
+   // Handle normal commands
+   assert(commands.contains(command.type), "Unknown command: {} - '{}'.", (int)command.type, command.value);
+   commands[command.type](command.value);
 }
 
 // Utility functions

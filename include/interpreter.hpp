@@ -28,13 +28,15 @@ struct Interpreter {
 
    std::unordered_map<Vector2, Token, Vector2> map;
    std::unordered_map<int, int> registers;
+   std::unordered_map<std::string, int> variables;
    std::stack<Vector2> jumps;
    std::stack<int> stack;
 
    Vector2 position, direction;
    bool stringmode = false, outputString = false, reverseString = false;
    bool numbermode = false, hexadecimalNumber = false;
-   std::string temporaryString, numberString;
+   bool identifiermode = false, gettingVariable = false;
+   std::string temporaryString, numberString, identifier;
 
    // Init commands
 

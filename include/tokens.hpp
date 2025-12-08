@@ -13,6 +13,7 @@ struct Token {
       outputInteger, outputAscii, outputString,
       integerInput, asciiInput, stringInput,
       number, ten, numbermode, getStackSize, randomGenerator,
+      define, getVariable
    };
 
    Type type = Type::empty;

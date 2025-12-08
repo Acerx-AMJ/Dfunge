@@ -1,7 +1,7 @@
-> t2u ? 0p 01J
-> o"Guess the number 0-100: "& 1p 02J
-> 1g 0g =k 1g 0g `k 06J
-      J40<     J50<
-> o"You guessed correctly!"t,o"Play again [y/n]: "~:,t, "y"=k@
-> o"Too high!"t, 01J                                     J00<
+> '100? #randomNumber 01J
+> o"Guess the number 0-100: "` #guess 02J
+> @guess @randomNumber =j @guess @randomNumber Gj 06J
+                     J40<                    J50<
+> o"You guessed correctly!"t, o"Play again [y/n]: "~:,t, "y"=jE
+> o"Too high!"t, 01J                                      J00<
 > o"Too low!"t, 01J

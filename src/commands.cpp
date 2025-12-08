@@ -20,7 +20,8 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {':', Token::duplicate}, {'\\', Token::swap}, {'q', Token::pop}, {'E', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
    {'`', Token::integerInput}, {'~', Token::asciiInput}, {'&', Token::stringInput},
-   {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize}, {'?', Token::randomGenerator}
+   {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize}, {'?', Token::randomGenerator},
+   {'#', Token::define}, {'@', Token::getVariable},
 };
 
 // Init commands
@@ -293,5 +294,16 @@ Interpreter::Interpreter() {
       int min = pop();
       int result = min + (rand() % (max - min + 1));
       push(result);
+   };
+
+   // Variable functions
+
+   commands[Token::define] = [this](char value) {
+      assertStackSize(1, value);
+      identifiermode = true;
+      gettingVariable = false;
+   };
+   commands[Token::getVariable] = [this](char) {
+      identifiermode = gettingVariable = true;
    };
 }

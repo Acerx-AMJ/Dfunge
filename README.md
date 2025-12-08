@@ -52,3 +52,5 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |'|Toggle number mode. When number mode is enabled, it pushes the next whole number to the stack, number mode is disabled when a non-digit character is parsed. If X is right after ', then number will be parsed as a hexadecimal|0|
 |s|Push the stack size to stack|0|
 |?|Pop MAX, then MIN and generate a random integer between MIN and MAX including. By default MIN is 0|1|
+|#|Enter identifiermode, create a new variable and assign a popped value|1|
+|@|Enter identifiermode, get the value from the given variable|0| 
