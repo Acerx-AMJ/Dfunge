@@ -17,7 +17,7 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power}, {'i', Token::increment}, {'d', Token::decrement},
    {'!', Token::logical_not}, {'`', Token::greaterThan}, {'=', Token::equals}, {'_', Token::logical_and}, {'|', Token::logical_or},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
-   {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::get}, {'p', Token::put}, {'G', Token::getRegister}, {'P', Token::putRegister},
+   {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
    {'&', Token::integerInput}, {'~', Token::asciiInput}, {'q', Token::stringInput},
    {'t', Token::ten}, {'s', Token::getStackSize}, {'?', Token::randomGenerator}
@@ -165,7 +165,7 @@ Interpreter::Interpreter() {
    };
    commands[Token::greaterThan] = [this](char value) {
       assertStackSize(2, value);
-      push(pop() > pop());
+      push(pop() < pop());
    };
    commands[Token::equals] = [this](char value) {
       assertStackSize(2, value);
@@ -202,10 +202,12 @@ Interpreter::Interpreter() {
 
    // Stack commands
 
-   commands[Token::duplicate] = [this](char) {
+   commands[Token::duplicate] = [this](char value) {
+      assertStackSize(1, value);
       push(top());
    };
-   commands[Token::swap] = [this](char) {
+   commands[Token::swap] = [this](char value) {
+      assertStackSize(2, value);
       int a = pop();
       int b = pop();
       push(a);
@@ -215,24 +217,8 @@ Interpreter::Interpreter() {
       pop();
    };
    commands[Token::terminate] = [](char) {
+      std::cout << std::flush;
       std::exit(0);
-   };
-   commands[Token::get] = [this](char value) {
-      assertStackSize(2, value);
-      int y = pop();
-      int x = pop();
-      if (map.contains({x, y})) {
-         push(map[{x, y}].value);
-      } else {
-         push(0);
-      }
-   };
-   commands[Token::put] = [this](char value) {
-      assertStackSize(3, value);
-      int y = pop();
-      int x = pop();
-      int v = pop();
-      map[{x, y}] = {tokenTypes[(char)v], (char)v};
    };
    commands[Token::getRegister] = [this](char value) {
       assertStackSize(1, value);

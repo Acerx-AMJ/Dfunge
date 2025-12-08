@@ -1,9 +1,9 @@
-> 2? 0P 01J
-> o"Rock (0), paper (1) or scissors (2): "& 1P 1G0=!1G1=!1G2=! __k 03J
+> 2? 0p 01J
+> o"Rock (0), paper (1) or scissors (2): "& 1p 1g0=!1g1=!1g2=! __k 03J
                      J00 ,t "Invalid input, please try again."or <
-> o"Rock..."t, o"Paper..."t, o"Scissors..."t,t, o"You: " 1G 04J o"Bot: " 0G 04J 07J
+> o"Rock..."t, o"Paper..."t, o"Scissors..."t,t, o"You: " 1g 04J o"Bot: " 0g 04J 07J
 > :0=k          1=k            v
      >o"Rock"t,$R >o"Paper"t,R >o"Scissors"t,R
                     >           >           > o"Bot won!">  >t, o"Play again [y/n]: "~:,t, "y"=k@
-> 0G 1G=k 10G= 01G=_l 00G= 21G=_l 20G= 11G=_l o"You won!"^                                  J00<
+> 0g 1g=k 10g= 01g=_l 00g= 21g=_l 20g= 11g=_l o"You won!"^                                  J00<
         >                                     o"It's a tie!"^

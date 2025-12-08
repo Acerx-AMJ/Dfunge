@@ -27,8 +27,10 @@ void Interpreter::lex(const std::string &code) {
 
       if (tokenTypes.contains(character)) {
          map[lexPosition] = {tokenTypes[character], character};
-      } else if (std::isalnum(character)) {
+      } else if (std::isdigit(character)) {
          map[lexPosition] = {Token::number, character};
+      } else {
+         map[lexPosition] = {Token::invalid, character};
       }
       lexPosition.x += 1;
    }
