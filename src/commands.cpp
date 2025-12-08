@@ -12,14 +12,14 @@
 
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
-   {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {';', Token::rightCondition}, {'j', Token::leftCondition}, {'l', Token::upCondition}, {'k', Token::downCondition}, {'#', Token::bridge},
+   {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {'l', Token::rightCondition}, {'h', Token::leftCondition}, {'k', Token::upCondition}, {'j', Token::downCondition}, {';', Token::bridge},
    {'J', Token::jump}, {'L', Token::jumpCondition}, {'R', Token::return_},
-   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
-   {'!', Token::logical_not}, {'`', Token::greaterThan}, {'=', Token::equals}, {'_', Token::logical_and}, {'|', Token::logical_or},
+   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'P', Token::power}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
+   {'!', Token::logical_not}, {'G', Token::greaterThan}, {'=', Token::equals},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
-   {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
+   {':', Token::duplicate}, {'\\', Token::swap}, {'q', Token::pop}, {'E', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
-   {'&', Token::integerInput}, {'~', Token::asciiInput}, {'q', Token::stringInput},
+   {'`', Token::integerInput}, {'~', Token::asciiInput}, {'&', Token::stringInput},
    {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize}, {'?', Token::randomGenerator}
 };
 
@@ -174,14 +174,6 @@ Interpreter::Interpreter() {
    commands[Token::equals] = [this](char value) {
       assertStackSize(2, value);
       push(pop() == pop());
-   };
-   commands[Token::logical_and] = [this](char value) {
-      assertStackSize(2, value);
-      push(pop() && pop());
-   };
-   commands[Token::logical_or] = [this](char value) {
-      assertStackSize(2, value);
-      push(pop() || pop());
    };
 
    // String commands
