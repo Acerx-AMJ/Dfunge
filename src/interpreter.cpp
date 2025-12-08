@@ -48,7 +48,23 @@ void Interpreter::run(const std::string &code) {
 }
 
 void Interpreter::runCommand(Token command) {
-   if (stringmode && command.type != Token::stringmode) {
+   // Number is completed after numbermode
+   if (numbermode && command.type != Token::number) {
+      numbermode = false;
+
+      if (!numberString.empty()) {
+         try {
+            push(std::stoi(numberString));
+            numberString.clear();
+         } catch (...) {
+            raise("''': Cannot convert string '{}' to number. Number is too large.", numberString);
+         }
+      }
+   }
+
+   if (numbermode && command.type == Token::number) {
+      numberString += command.value;
+   } else if (stringmode && command.type != Token::stringmode) {
       if (reverseString) {
          temporaryString.push_back(command.value);
       } else if (outputString) {

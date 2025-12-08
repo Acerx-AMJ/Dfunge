@@ -29,6 +29,7 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |u|Pop A, then B, exponentiate B to the power of A and push the result to stack|2|
 |i|Pop a value, increment it by one and push it back to stack|1|
 |d|Pop a value, decrement it by one and push it back to stack|1|
+|n|Pop a value, negate it and push it back to stack|1|
 |!|Pop a value, if it is zero, push 1, else 0|1|
 |`|Pop A, then B, if B is bigger than A, push 1, else 0|2|
 |=|Pop two values, if they're equal, push 1, else 0|2|
@@ -50,5 +51,6 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |q|Get a string input from the user|0|
 |0-9|Push the corresponding digit to stack|0|
 |t|Push 10 to stack|0|
+|'|Toggle number mode. When number mode is enabled, it pushes the next whole number to the stack, number mode is disabled when a non-digit character is parsed|0|
 |s|Push the stack size to stack|0|
 |?|Pop MAX, then MIN and generate a random integer between MIN and MAX including. By default MIN is 0|1|

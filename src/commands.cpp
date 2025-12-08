@@ -14,13 +14,13 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
    {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {';', Token::rightCondition}, {'j', Token::leftCondition}, {'l', Token::upCondition}, {'k', Token::downCondition}, {'#', Token::bridge},
    {'J', Token::jump}, {'L', Token::jumpCondition}, {'R', Token::return_},
-   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power}, {'i', Token::increment}, {'d', Token::decrement},
+   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'u', Token::power}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
    {'!', Token::logical_not}, {'`', Token::greaterThan}, {'=', Token::equals}, {'_', Token::logical_and}, {'|', Token::logical_or},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
    {':', Token::duplicate}, {'\\', Token::swap}, {'$', Token::pop}, {'@', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
    {'&', Token::integerInput}, {'~', Token::asciiInput}, {'q', Token::stringInput},
-   {'t', Token::ten}, {'s', Token::getStackSize}, {'?', Token::randomGenerator}
+   {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize}, {'?', Token::randomGenerator}
 };
 
 // Init commands
@@ -156,6 +156,10 @@ Interpreter::Interpreter() {
       assertStackSize(1, value);
       push(pop() - 1);
    };
+   commands[Token::negate] = [this](char value) {
+      assertStackSize(1, value);
+      push(-pop());
+   };
 
    // Logical commands
 
@@ -284,6 +288,9 @@ Interpreter::Interpreter() {
    };
    commands[Token::ten] = [this](char) {
       push(10);
+   };
+   commands[Token::numbermode] = [this](char) {
+      numbermode = !numbermode;
    };
    commands[Token::getStackSize] = [this](char) {
       push(stack.size());

@@ -33,7 +33,8 @@ struct Interpreter {
 
    Vector2 position, direction;
    bool stringmode = false, outputString = false, reverseString = false;
-   std::string temporaryString;
+   bool numbermode = false;
+   std::string temporaryString, numberString;
 
    // Init commands
 
