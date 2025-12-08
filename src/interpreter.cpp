@@ -49,12 +49,16 @@ void Interpreter::run(const std::string &code) {
 
 void Interpreter::runCommand(Token command) {
    // Number is completed after numbermode
-   if (numbermode && command.type != Token::number) {
-      numbermode = false;
+   if (numbermode && (hexadecimalNumber ? !isHexadecimal(command.value) : command.type != Token::number)) {
+      if (command.value == 'X' && numberString.empty()) {
+         hexadecimalNumber = true;
+         return;
+      }
 
+      numbermode = false;
       if (!numberString.empty()) {
          try {
-            push(std::stoi(numberString));
+            push(std::stoi(numberString, nullptr, (hexadecimalNumber ? 16 : 10)));
             numberString.clear();
          } catch (...) {
             raise("''': Cannot convert string '{}' to number. Number is too large.", numberString);
@@ -62,7 +66,7 @@ void Interpreter::runCommand(Token command) {
       }
    }
 
-   if (numbermode && command.type == Token::number) {
+   if (numbermode && (hexadecimalNumber ? isHexadecimal(command.value) : command.type == Token::number)) {
       numberString += command.value;
    } else if (stringmode && command.type != Token::stringmode) {
       if (reverseString) {
@@ -113,4 +117,9 @@ void Interpreter::push(int value) {
 
 void Interpreter::assertStackSize(size_t minimum, char operatorc) {
    assert(stack.size() >= minimum, "'{}': Expected stack size to be at least {}, but it is {} instead.", operatorc, minimum, stack.size());
+}
+
+bool Interpreter::isHexadecimal(char character) {
+   character = std::tolower(character);
+   return std::isdigit(character) || (character >= 'a' && character <= 'f');
 }

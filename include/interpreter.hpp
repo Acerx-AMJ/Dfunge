@@ -33,7 +33,7 @@ struct Interpreter {
 
    Vector2 position, direction;
    bool stringmode = false, outputString = false, reverseString = false;
-   bool numbermode = false;
+   bool numbermode = false, hexadecimalNumber = false;
    std::string temporaryString, numberString;
 
    // Init commands
@@ -57,6 +57,7 @@ struct Interpreter {
    int top();
    void push(int value);
    void assertStackSize(size_t minimum, char operatorc);
+   bool isHexadecimal(char character);
 };
 
 #endif
