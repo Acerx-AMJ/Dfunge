@@ -25,14 +25,18 @@ void Interpreter::lex(const std::string &code) {
          continue;
       }
 
-      if (tokenTypes.contains(character)) {
-         map[lexPosition] = {tokenTypes[character], character};
-      } else if (std::isdigit(character)) {
-         map[lexPosition] = {Token::number, character};
-      } else {
-         map[lexPosition] = {Token::invalid, character};
-      }
+      map[lexPosition] = lexCommand(character);
       lexPosition.x += 1;
+   }
+}
+
+Token Interpreter::lexCommand(char character) {
+   if (tokenTypes.contains(character)) {
+      return {tokenTypes[character], character};
+   } else if (std::isdigit(character)) {
+      return {Token::number, character};
+   } else {
+      return {Token::invalid, character};
    }
 }
 
@@ -95,6 +99,12 @@ void Interpreter::runCommand(Token command) {
       } else {
          push(command.value);
       }
+      return;
+   }
+
+   // Handle defer mode
+   if (defermode && command.type != Token::defer) {
+      defered.push(command);
       return;
    }
 

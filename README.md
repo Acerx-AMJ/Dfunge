@@ -2,7 +2,9 @@
 Dfunge is a successor to Cfunge, which is a 2D esoteric programming language based off Befunge-93.
 
 ## Language Overview
-Dfunge is laid out on a two-dimensional playground, just like Befunge-93. The playfield is practically infinite in size (-2147483648 to 2147483647 on both axes). The program counter starts at (0, 0) and is pointed to the right. Just like in Befunge-93, the program counter has inertia, meaning that it will continue moving in a specific direction until it is changed, but it does not wrap around when it reaches a limit. When the program counter lands on a command, it gets executed. Dfunge uses two data structures: the stack, where all operators are used, and the registers (with the same size as the playfield), which can only store numeric values and characters.
+Dfunge is laid out on a two-dimensional playground, just like Befunge-93. The playfield is practically infinite in size (-2147483648 to 2147483647 on both axes). The program counter starts at (0, 0) and is pointed to the right. Just like in Befunge-93, the program counter has inertia, meaning that it will continue moving in a specific direction until it is changed, but it does not wrap around when it reaches a limit. When the program counter lands on a command, it gets executed.
+
+Dfunge uses four different data structures: the stack, the defered stack, the variable map and the registers. The stack is used for operating on and storing values. It stores 32-bit integers, which also count as characters, so all three Dfunge data types can be stored: integers, characters and strings. The defered stack stores commands, which can be operated on and executed using the defer commands. Variable map stores all of the variables, which can store integers and characters, for non-string types this is the preferred way of storing values. The register map stores integers in a specific index, it is used for storing arrays and strings. 
 
 ## Instructions
 Command names are case-sensitive. If stack size is less than the expected stack size while calling a command, the command will throw an error. If stack is empty, then any popped value will be 0 (in commands that use a value from the stack, but don't require the stack size, e.g j, k, l, ;, ?).
@@ -47,6 +49,15 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |`|Get integer input from the user|0|
 |~|Get a single character input from the user|0|
 |&|Get a string input from the user|0|
+|$|Toggle defer mode, when defer mode is on, push all commands to defer stack instead of executing them|0|
+|X|Run all defered commands|0|
+|x|Run a single defered command|0|
+|T|Pop a value from the stack and push it to the defered stack as a command|1|
+|N|Pop a value from the defered stack and push the character value to the stack|0|
+|D|Duplicate the top defered command|0|
+|I|Swap the top two defered commands|0|
+|Q|Pop the top defered command|0|
+|S|Push the size of the defered stack to the stack|0|
 |0-9|Push the corresponding digit to stack|0|
 |t|Push 10 to stack|0|
 |'|Toggle number mode. When number mode is enabled, it pushes the next whole number to the stack, number mode is disabled when a non-digit character is parsed. If X is right after ', then number will be parsed as a hexadecimal|0|

@@ -30,12 +30,14 @@ struct Interpreter {
    std::unordered_map<int, int> registers;
    std::unordered_map<std::string, int> variables;
    std::stack<Vector2> jumps;
+   std::stack<Token> defered;
    std::stack<int> stack;
 
    Vector2 position, direction;
    bool stringmode = false, outputString = false, reverseString = false;
    bool numbermode = false, hexadecimalNumber = false;
    bool identifiermode = false, gettingVariable = false;
+   bool defermode = false;
    std::string temporaryString, numberString, identifier;
 
    // Init commands
@@ -45,6 +47,7 @@ struct Interpreter {
    // Lexer
 
    void lex(const std::string &code);
+   Token lexCommand(char character);
 
    // Interpreter
 

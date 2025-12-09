@@ -12,6 +12,7 @@ struct Token {
       duplicate, swap, pop, terminate, getRegister, putRegister,
       outputInteger, outputAscii, outputString,
       integerInput, asciiInput, stringInput,
+      defer, deferRun, deferRunOne, deferGet, deferPush, deferDuplicate, deferSwap, deferPop, deferSize,
       number, ten, numbermode, getStackSize, randomGenerator,
       define, getVariable
    };

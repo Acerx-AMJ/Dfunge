@@ -10,6 +10,12 @@
 
 // Globals
 
+// Unused characters
+//                             (  )  _
+//    wW e        yY uU     O    [{ }]  |
+// aA       fF     H     K
+// zZ    cC  V bB    mM
+
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
    {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {'l', Token::rightCondition}, {'h', Token::leftCondition}, {'k', Token::upCondition}, {'j', Token::downCondition}, {';', Token::bridge},
@@ -20,6 +26,7 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {':', Token::duplicate}, {'\\', Token::swap}, {'q', Token::pop}, {'E', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
    {'`', Token::integerInput}, {'~', Token::asciiInput}, {'&', Token::stringInput},
+   {'$', Token::defer}, {'X', Token::deferRun}, {'x', Token::deferRunOne}, {'T', Token::deferGet}, {'N', Token::deferPush}, {'D', Token::deferDuplicate}, {'I', Token::deferSwap}, {'Q', Token::deferPop}, {'S', Token::deferSize},
    {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize}, {'?', Token::randomGenerator},
    {'#', Token::define}, {'@', Token::getVariable},
 };
@@ -272,6 +279,70 @@ Interpreter::Interpreter() {
       for (auto it = input.rbegin(); it != input.rend(); ++it) {
          push(*it);
       }
+   };
+
+   // Defer commands
+
+   commands[Token::defer] = [this](char) {
+      defermode = !defermode;
+   };
+   commands[Token::deferRun] = [this](char) {
+      while (!defered.empty()) {
+         Token command = defered.top();
+         defered.pop();
+         runCommand(command);
+      }
+   };
+   commands[Token::deferRunOne] = [this](char) {
+      if (!defered.empty()) {
+         Token command = defered.top();
+         defered.pop();
+         runCommand(command);
+      }
+   };
+   commands[Token::deferGet] = [this](char value) {
+      assertStackSize(1, value);
+      char character = pop();
+      Token token = lexCommand(character);
+      defered.push(token);
+   };
+   commands[Token::deferPush] = [this](char) {
+      char command = 0;
+      if (!defered.empty()) {
+         command = defered.top().value;
+         defered.pop();
+      }
+      push(command);
+   };
+   commands[Token::deferDuplicate] = [this](char) {
+      Token command;
+      if (!defered.empty()) {
+         command = defered.top();
+      }
+      defered.push(command);
+   };
+   commands[Token::deferSwap] = [this](char) {
+      Token first;
+      if (!defered.empty()) {
+         first = defered.top();
+         defered.pop();
+      }
+
+      Token second;
+      if (!defered.empty()) {
+         second = defered.top();
+         defered.pop();
+      }
+      defered.push(first);
+      defered.push(second);
+   };
+   commands[Token::deferPop] = [this](char) {
+      if (!defered.empty()) {
+         defered.pop();
+      }
+   };
+   commands[Token::deferSize] = [this](char) {
+      push(defered.size());
    };
 
    // Literal commands
