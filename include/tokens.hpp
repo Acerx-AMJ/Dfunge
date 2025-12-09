@@ -14,7 +14,7 @@ struct Token {
       integerInput, asciiInput, stringInput,
       defer, deferRun, deferRunOne, deferGet, deferPush, deferDuplicate, deferSwap, deferPop, deferSize,
       number, ten, numbermode, getStackSize, randomGenerator,
-      define, getVariable
+      define, getVariable, callFunction
    };
 
    Type type = Type::empty;

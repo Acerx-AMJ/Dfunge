@@ -27,7 +27,7 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |-|Pop A, then B, subtract A from B and push result to stack|2|
 |*|Pop two values, multiply them together and push result to stack|2|
 |/|Pop A, then B, perform integer division on B by A and push result to stack|2|
-|%|Pop A, then B, perform integer division on B by A and push the remainder to stack|2|
+|M|Pop A, then B, perform integer division on B by A and push the remainder to stack|2|
 |P|Pop A, then B, exponentiate B to the power of A and push the result to stack|2|
 |i|Pop a value, increment it by one and push it back to stack|1|
 |d|Pop a value, decrement it by one and push it back to stack|1|
@@ -63,5 +63,11 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |'|Toggle number mode. When number mode is enabled, it pushes the next whole number to the stack, number mode is disabled when a non-digit character is parsed. If X is right after ', then number will be parsed as a hexadecimal|0|
 |s|Push the stack size to stack|0|
 |?|Pop MAX, then MIN and generate a random integer between MIN and MAX including. By default MIN is 0|1|
-|#|Enter identifiermode, create a new variable and assign a popped value|1|
+|#|Enter identifiermode, create a new variable and assign a popped value. Variables can include all alpha-numerical characters including underscores|1|
 |@|Enter identifiermode, get the value from the given variable|0| 
+|%|Enter identifiermode, call the function with the given identifier|0|
+
+## Functions
+|Function|Description|Expected stack size|
+|-|-|-|
+|abs|Get the absolute value of a popped value|1|

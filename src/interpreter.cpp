@@ -11,6 +11,15 @@ size_t Vector2::operator()(const Vector2 &vector) const {
    return std::hash<int>()(vector.x) ^ (std::hash<int>()(vector.y) << 1);
 }
 
+// Constructor
+
+Interpreter::Interpreter() {
+   srand(time(nullptr));
+   direction = {1, 0};
+   initCommands();
+   initFunctions();
+}
+
 // Lexer
 
 void Interpreter::lex(const std::string &code) {
@@ -57,12 +66,15 @@ void Interpreter::runCommand(Token command) {
       if (gettingVariable) {
          assert(variables.contains(identifier), "Variable '{}' is not defined.", identifier);
          push(variables[identifier]);
+      } else if (callingFunction) {
+         assert(functions.contains(identifier), "Built-in function '{}' is not defined.", identifier);
+         functions[identifier]();
       } else {
          // Stack size checked in Token::define command
          int a = pop();
          variables[identifier] = a;
       }
-      identifiermode = gettingVariable = false;
+      identifiermode = gettingVariable = callingFunction = false;
       identifier.clear();
    } else if (identifiermode) {
       identifier += command.value;
@@ -148,6 +160,10 @@ void Interpreter::push(int value) {
 
 void Interpreter::assertStackSize(size_t minimum, char operatorc) {
    assert(stack.size() >= minimum, "'{}': Expected stack size to be at least {}, but it is {} instead.", operatorc, minimum, stack.size());
+}
+
+void Interpreter::assertStackSize(size_t minimum, const std::string &string) {
+   assert(stack.size() >= minimum, "Function '{}': Expected stack size to be at least {}, but it is {} instead.", string, minimum, stack.size());
 }
 
 bool Interpreter::isHexadecimal(char character) {

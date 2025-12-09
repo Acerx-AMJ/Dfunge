@@ -14,13 +14,13 @@
 //                             (  )  _
 //    wW e        yY uU     O    [{ }]  |
 // aA       fF     H     K
-// zZ    cC  V bB    mM
+// zZ    cC  V bB    m
 
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
    {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {'l', Token::rightCondition}, {'h', Token::leftCondition}, {'k', Token::upCondition}, {'j', Token::downCondition}, {';', Token::bridge},
    {'J', Token::jump}, {'L', Token::jumpCondition}, {'R', Token::return_},
-   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'%', Token::modulo}, {'P', Token::power}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
+   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'M', Token::modulo}, {'P', Token::power}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
    {'!', Token::logical_not}, {'G', Token::greaterThan}, {'=', Token::equals},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
    {':', Token::duplicate}, {'\\', Token::swap}, {'q', Token::pop}, {'E', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
@@ -28,15 +28,12 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {'`', Token::integerInput}, {'~', Token::asciiInput}, {'&', Token::stringInput},
    {'$', Token::defer}, {'X', Token::deferRun}, {'x', Token::deferRunOne}, {'T', Token::deferGet}, {'N', Token::deferPush}, {'D', Token::deferDuplicate}, {'I', Token::deferSwap}, {'Q', Token::deferPop}, {'S', Token::deferSize},
    {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize}, {'?', Token::randomGenerator},
-   {'#', Token::define}, {'@', Token::getVariable},
+   {'#', Token::define}, {'@', Token::getVariable}, {'%', Token::callFunction},
 };
 
 // Init commands
 
-Interpreter::Interpreter() {
-   srand(time(nullptr));
-   direction = {1, 0};
-
+void Interpreter::initCommands() {
    // Empty
 
    commands[Token::empty] = [](char) {};
@@ -372,9 +369,14 @@ Interpreter::Interpreter() {
    commands[Token::define] = [this](char value) {
       assertStackSize(1, value);
       identifiermode = true;
-      gettingVariable = false;
+      gettingVariable = callingFunction = false;
    };
    commands[Token::getVariable] = [this](char) {
       identifiermode = gettingVariable = true;
+      callingFunction = false;
+   };
+   commands[Token::callFunction] = [this](char) {
+      identifiermode = callingFunction = true;
+      gettingVariable = false;
    };
 }
