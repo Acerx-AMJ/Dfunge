@@ -6,14 +6,14 @@ struct Token {
       invalid, empty,
       right, left, up, down, rightCondition, leftCondition, upCondition, downCondition, bridge,
       jump, jumpCondition, return_,
-      add, subtract, multiply, divide, modulo, power, increment, decrement, negate,
+      add, subtract, multiply, divide, increment, decrement, negate,
       logical_not, greaterThan, equals,
       stringmode, reverseStringMode,
       duplicate, swap, pop, terminate, getRegister, putRegister,
       outputInteger, outputAscii, outputString,
       integerInput, asciiInput, stringInput,
       defer, deferRun, deferRunOne, deferGet, deferPush, deferDuplicate, deferSwap, deferPop, deferSize,
-      number, ten, numbermode, getStackSize, randomGenerator,
+      number, ten, numbermode, getStackSize,
       define, getVariable, callFunction
    };
 

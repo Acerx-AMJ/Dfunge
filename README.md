@@ -62,12 +62,34 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |t|Push 10 to stack|0|
 |'|Toggle number mode. When number mode is enabled, it pushes the next whole number to the stack, number mode is disabled when a non-digit character is parsed. If X is right after ', then number will be parsed as a hexadecimal|0|
 |s|Push the stack size to stack|0|
-|?|Pop MAX, then MIN and generate a random integer between MIN and MAX including. By default MIN is 0|1|
 |#|Enter identifiermode, create a new variable and assign a popped value. Variables can include all alpha-numerical characters including underscores|1|
 |@|Enter identifiermode, get the value from the given variable|0| 
 |%|Enter identifiermode, call the function with the given identifier|0|
 
 ## Functions
+Functions are esentially commands that use more characters. They can be called using the % operator.
+
+### Math Utility Functions
 |Function|Description|Expected stack size|
 |-|-|-|
 |abs|Get the absolute value of a popped value|1|
+|sign|Pop a value and return the sign of it|1|
+|min|Pop two values and return the smallest of them|2|
+|max|Pop two values and return the largest of them|2|
+|clamp|Pop HI, LO and V and clamp V in the range [LO, HI]|3|
+|sclamp|Same as clamp, but changes HI with LO if LO is bigger than HI|3|
+|mod|Pop A and B and perform modulus|2|
+
+### Math Functions
+|Function|Description|Expected stack size|
+|-|-|-|
+|pow|Pop POWER, then BASE and raise BASE to the power of POWER|2|
+
+### Random Functions
+|Function|Description|Expected stack size|
+|-|-|-|
+|rand|Push a random integer to the stack|0|
+|randint|Pop MAX, then MIN and generate a random integer between MIN and MAX including. By default MIN is 0|1|
+|randcond|Push either 0 or 1|0|
+|srand|Pop a value and seed the random device|1|
+|srandt|Seed the random device with the current time in seconds|0|

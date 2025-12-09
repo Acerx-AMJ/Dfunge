@@ -12,22 +12,22 @@
 
 // Unused characters
 //                             (  )  _
-//    wW e        yY uU     O    [{ }]  |
+//    wW e        yY uU     O  P  [{ }]  |
 // aA       fF     H     K
-// zZ    cC  V bB    m
+// zZ    cC  V bB    mM        ?
 
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
    {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {'l', Token::rightCondition}, {'h', Token::leftCondition}, {'k', Token::upCondition}, {'j', Token::downCondition}, {';', Token::bridge},
    {'J', Token::jump}, {'L', Token::jumpCondition}, {'R', Token::return_},
-   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'M', Token::modulo}, {'P', Token::power}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
+   {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
    {'!', Token::logical_not}, {'G', Token::greaterThan}, {'=', Token::equals},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
    {':', Token::duplicate}, {'\\', Token::swap}, {'q', Token::pop}, {'E', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
    {'`', Token::integerInput}, {'~', Token::asciiInput}, {'&', Token::stringInput},
    {'$', Token::defer}, {'X', Token::deferRun}, {'x', Token::deferRunOne}, {'T', Token::deferGet}, {'N', Token::deferPush}, {'D', Token::deferDuplicate}, {'I', Token::deferSwap}, {'Q', Token::deferPop}, {'S', Token::deferSize},
-   {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize}, {'?', Token::randomGenerator},
+   {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize},
    {'#', Token::define}, {'@', Token::getVariable}, {'%', Token::callFunction},
 };
 
@@ -138,20 +138,6 @@ void Interpreter::initCommands() {
 
       assert(a != 0, "'{}': Attempted to divide '{}' by zero.", value, b);
       push(b / a);
-   };
-   commands[Token::modulo] = [this](char value) {
-      assertStackSize(2, value);
-      int a = pop();
-      int b = pop();
-
-      assert(a != 0, "'{}': Attempted to divide '{}' by zero.", value, b);
-      push(b % a);
-   };
-   commands[Token::power] = [this](char value) {
-      assertStackSize(2, value);
-      int a = pop();
-      int b = pop();
-      push(std::pow(b, a));
    };
    commands[Token::increment] = [this](char value) {
       assertStackSize(1, value);
@@ -355,13 +341,6 @@ void Interpreter::initCommands() {
    };
    commands[Token::getStackSize] = [this](char) {
       push(stack.size());
-   };
-   commands[Token::randomGenerator] = [this](char value) {
-      assertStackSize(1, value);
-      int max = pop();
-      int min = pop();
-      int result = min + (rand() % (max - min + 1));
-      push(result);
    };
 
    // Variable functions
