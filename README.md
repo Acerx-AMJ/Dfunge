@@ -1,5 +1,5 @@
 # Dfunge
-Dfunge is a successor to Cfunge, which is a 2D esoteric programming language based off Befunge-93.
+Dfunge is a successor to Cfunge, which is a 2D esoteric programming language based off Befunge-93. There are various examples available in the examples folder. Some are outdated, though.
 
 ## Language Overview
 Dfunge is laid out on a two-dimensional playground, just like Befunge-93. The playfield is practically infinite in size (-2147483648 to 2147483647 on both axes). The program counter starts at (0, 0) and is pointed to the right. Just like in Befunge-93, the program counter has inertia, meaning that it will continue moving in a specific direction until it is changed, but it does not wrap around when it reaches a limit. When the program counter lands on a command, it gets executed.
@@ -100,6 +100,12 @@ Functions are esentially commands that use more characters. They can be called u
 |readfile|Pop the size of the file name, then pop that many characters and create a string. Open the file with the given string and push all contents to stack|>1|
 |writefile|Pop the size of the file name, then pop that many characters and create a file name. Pop another number, then pop that many characters and create a string. Write the string to the file name|>2|
 |appendfile|Same as writefile, but appends the string|>2| 
+|isfile|Get the filename and return 1 if it exists and is a file, 0 otherwise|>1|
+|isdirectory|Get the filename and return 1 if it exists and is a directory, 0 otherwise|>1|
+|createdirectory|Get the name and create a directory|>1|
+|createfile|Get the name and create a file|>1|
+|iteratedirectory|Get the name and iterate all files in the directory. Push 0 first, the push all file names and their character count, like so (top to bottom): '6 file.a 7 file2.a 7 file3.a 0'.|>1|
+|deletefile|Get the name and delete the file/directory.|>1|
 
 ### Debug Functions
 |Function|Description|Expected stack size|

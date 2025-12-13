@@ -1,0 +1,1 @@
+rt"Hello, File!"s #size @size r"HelloFile.txt" s@size-d %writefile E

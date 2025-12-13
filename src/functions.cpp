@@ -2,6 +2,7 @@
 #include "interpreter.hpp"
 #include <cmath>
 #include <ctime>
+#include <filesystem>
 #include <fstream>
 
 void Interpreter::initFunctions() {
@@ -175,6 +176,99 @@ void Interpreter::initFunctions() {
       assert(file.is_open(), "'appendfile': Failed to open file '{}'.", filename);
 
       file << write;
+   };
+
+   functions["isfile"] = [this]() {
+      assertStackSize(1, "isfile");
+      int charcount = pop();
+
+      assertStackSize(charcount, "isfile");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+
+      push(std::filesystem::exists(filename) && std::filesystem::is_regular_file(filename));
+   };
+
+   functions["isdirectory"] = [this]() {
+      assertStackSize(1, "isdirectory");
+      int charcount = pop();
+
+      assertStackSize(charcount, "isdirectory");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+
+      push(std::filesystem::exists(filename) && std::filesystem::is_directory(filename));
+   };
+
+   functions["createdirectory"] = [this]() {
+      assertStackSize(1, "createdirectory");
+      int charcount = pop();
+
+      assertStackSize(charcount, "createdirectory");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+
+      assert(std::filesystem::create_directories(filename), "'createdirectory': Failed to create directory '{}'.", filename);
+   };
+
+   functions["createfile"] = [this]() {
+      assertStackSize(1, "createfile");
+      int charcount = pop();
+
+      assertStackSize(charcount, "createfile");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+      std::ofstream file (filename, std::ios::out);
+      assert(file.is_open(), "'createfile': Failed to create file '{}'.", filename);
+   };
+
+   functions["iteratedirectory"] = [this]() {
+      assertStackSize(1, "iteratedirectory");
+      int charcount = pop();
+
+      assertStackSize(charcount, "iteratedirectory");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+
+      assert(std::filesystem::exists(filename) && std::filesystem::is_directory(filename), "'iteratedirectory': Cannot iterate directory '{}'.", filename);
+      push(0); // EOF
+      
+      for (const auto &file: std::filesystem::directory_iterator(filename)) {
+         std::string entryName = file.path().string();
+         for (auto it = entryName.rbegin(); it != entryName.rend(); ++it) {
+            push(*it);
+         }
+         push(entryName.size());
+      }
+   };
+
+   functions["deletefile"] = [this]() {
+      assertStackSize(1, "deletefile");
+      int charcount = pop();
+
+      assertStackSize(charcount, "deletefile");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+      assert(std::filesystem::exists(filename), "'deletefile': File '{}' does not exist.", filename);
+      assert(std::filesystem::remove_all(filename), "'deletefile': Could not delete file '{}'.", filename);
    };
 
    // Debug functions
