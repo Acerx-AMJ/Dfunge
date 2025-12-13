@@ -1,6 +1,8 @@
+#include "format.hpp" // IWYU pragma: export
 #include "interpreter.hpp"
 #include <cmath>
 #include <ctime>
+#include <fstream>
 
 void Interpreter::initFunctions() {
    // Math utility functions
@@ -93,5 +95,145 @@ void Interpreter::initFunctions() {
    };
    functions["srandt"] = []() {
       srand(time(nullptr));
+   };
+
+   // File I/O functions
+
+   functions["readfile"] = [this]() {
+      assertStackSize(1, "readfile");
+      int charcount = pop();
+
+      assertStackSize(charcount, "readfile");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+
+      std::ifstream file (filename);
+      assert(file.is_open(), "'readfile': Failed to open file '{}'.", filename);
+
+      std::string temp, total;
+      while (std::getline(file, temp)) {
+         total += temp + '\n';
+      }
+
+      for (auto it = total.rbegin(); it != total.rend(); ++it) {
+         push(*it);
+      }
+   };
+
+   functions["writefile"] = [this]() {
+      assertStackSize(1, "writefile");
+      int charcount = pop();
+
+      assertStackSize(charcount, "writefile");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+
+      assertStackSize(1, "writefile");
+      int writecount = pop();
+
+      assertStackSize(writecount, "writefile");
+      std::string write;
+
+      for (int i = 0; i < writecount; ++i) {
+         write += pop();
+      }
+
+      std::ofstream file (filename, std::ios::out);
+      assert(file.is_open(), "'writefile': Failed to open file '{}'.", filename);
+
+      file << write;
+   };
+
+   functions["appendfile"] = [this]() {
+      assertStackSize(1, "appendfile");
+      int charcount = pop();
+
+      assertStackSize(charcount, "appendfile");
+      std::string filename;
+
+      for (int i = 0; i < charcount; ++i) {
+         filename += pop();
+      }
+
+      assertStackSize(1, "appendfile");
+      int writecount = pop();
+
+      assertStackSize(writecount, "appendfile");
+      std::string write;
+
+      for (int i = 0; i < writecount; ++i) {
+         write += pop();
+      }
+
+      std::ofstream file (filename, std::ios::out | std::ios::app);
+      assert(file.is_open(), "'appendfile': Failed to open file '{}'.", filename);
+
+      file << write;
+   };
+
+   // Debug functions
+
+   functions["logstack"] = [this]() {
+      std::cout << "STACK (top to bottom):\n";
+      std::cout << "SIZE: " << stack.size() << "\n";
+
+      std::stack<int> stackCopy = stack;
+      int counter = 1;
+
+      while (!stack.empty()) {
+         int popped = pop();
+         printf("%5d: Num: %-10d ASCII: '%c'\n", counter, popped, popped);
+         counter += 1;
+      }
+
+      stack = stackCopy;
+      std::cout << "END OF STACK\n";
+   };
+
+   functions["logdefer"] = [this]() {
+      std::cout << "DEFER STACK (top to bottom):\n";
+      std::cout << "SIZE: " << defered.size() << "\n";
+
+      std::stack<Token> deferedCopy = defered;
+      int counter = 1;
+
+      while (!defered.empty()) {
+         Token popped = defered.top();
+         defered.pop();
+
+         printf("%5d: ASCII: '%c' Type: '%s'\n", counter, popped.value, tokenTypeStrings[popped.type]);
+         counter += 1;
+      }
+
+      defered = deferedCopy;
+      std::cout << "END OF DEFER STACK\n";
+   };
+
+   functions["logregs"] = [this]() {
+      std::cout << "REGISTERS:\n";
+      std::cout << "SIZE: " << registers.size() << '\n';
+      
+      for (auto &[index, value]: registers) {
+         printf("%5d: %d\n", index, value);
+      }
+      std::cout << "END OF REGISTERS\n";
+   };
+
+   functions["logvars"] = [this]() {
+      std::cout << "VARIABLES:\n";
+      std::cout << "SIZE: " << variables.size() << '\n';
+      int counter = 1;
+
+      for (auto &[identifier, value]: variables) {
+         printf("%5d: '%s': Num: %-10d ASCII: '%c'\n", counter, identifier.c_str(), value, value);
+         counter += 1;
+      }
+      std::cout << "END OF VARIABLES\n";
    };
 }

@@ -93,3 +93,18 @@ Functions are esentially commands that use more characters. They can be called u
 |randcond|Push either 0 or 1|0|
 |srand|Pop a value and seed the random device|1|
 |srandt|Seed the random device with the current time in seconds|0|
+
+### File I/O Functions
+|Function|Description|Expected stack size|
+|-|-|-|
+|readfile|Pop the size of the file name, then pop that many characters and create a string. Open the file with the given string and push all contents to stack|>1|
+|writefile|Pop the size of the file name, then pop that many characters and create a file name. Pop another number, then pop that many characters and create a string. Write the string to the file name|>2|
+|appendfile|Same as writefile, but appends the string|>2| 
+
+### Debug Functions
+|Function|Description|Expected stack size|
+|-|-|-|
+|logstack|Log all stack values|0|
+|logdefer|Log all defer stack commands|0|
+|logregs|Log all accessed registers|0|
+|logvars|Log all variables and their values|0|

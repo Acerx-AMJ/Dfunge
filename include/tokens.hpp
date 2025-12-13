@@ -21,4 +21,19 @@ struct Token {
    char value = 0;
 };
 
+constexpr const char *tokenTypeStrings[] {
+   "Invalid", "Empty",
+   "Right", "Left", "Up", "Down", "RightCondition", "LeftCondition", "UpCondition", "DownCondition", "Bridge",
+   "Jump", "JumpCondition", "Return",
+   "Add", "Subtract", "Multiply", "Divide", "Increment", "Decrement", "Negate",
+   "LogicalNot", "GreaterThan", "Equals",
+   "Stringmode", "ReverseStringmode",
+   "Duplicate", "Swap", "Pop", "Terminate", "GetRegister", "PutRegister",
+   "OutputInteger", "OutputASCII", "OutputString",
+   "IntegerInput", "ASCIIInput", "StringInput",
+   "Defer", "DeferRun", "DeferRunOne", "DeferGet", "DeferPush", "DeferDuplicate", "DeferSwap", "DeferPop", "DeferSize",
+   "Number", "Ten", "Numbermode", "GetStackSize",
+   "Define", "GetVariable", "CallFunction"
+};
+
 #endif
