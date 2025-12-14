@@ -330,4 +330,16 @@ void Interpreter::initFunctions() {
       }
       std::cout << "END OF VARIABLES\n";
    };
+
+   functions["loglabels"] = [this]() {
+      std::cout << "LABELS:\n";
+      std::cout << "SIZE: " << labels.size() << '\n';
+      int counter = 1;
+
+      for (auto &[label, position]: labels) {
+         printf("%5d: '%s': X: %d Y: %d\n", counter, label.c_str(), position.x, position.y);
+         counter += 1;
+      }
+      std::cout << "END OF LABELS\n";
+   };
 }

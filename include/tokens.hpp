@@ -14,7 +14,7 @@ struct Token {
       integerInput, asciiInput, stringInput,
       defer, deferRun, deferRunOne, deferGet, deferPush, deferDuplicate, deferSwap, deferPop, deferSize,
       number, ten, numbermode, getStackSize,
-      define, getVariable, callFunction
+      define, getVariable, callFunction, getLabelPos
    };
 
    Type type = Type::empty;
@@ -33,7 +33,7 @@ constexpr const char *tokenTypeStrings[] {
    "IntegerInput", "ASCIIInput", "StringInput",
    "Defer", "DeferRun", "DeferRunOne", "DeferGet", "DeferPush", "DeferDuplicate", "DeferSwap", "DeferPop", "DeferSize",
    "Number", "Ten", "Numbermode", "GetStackSize",
-   "Define", "GetVariable", "CallFunction"
+   "Define", "GetVariable", "CallFunction", "GetLabelPosition"
 };
 
 #endif

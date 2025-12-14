@@ -27,19 +27,23 @@ struct Interpreter {
    std::unordered_map<Token::Type, std::function<void(char)>> commands;
    std::unordered_map<std::string, std::function<void()>> functions;
 
+   std::unordered_map<std::string, Vector2> labels;
+
    std::unordered_map<Vector2, Token, Vector2> map;
    std::unordered_map<int, int> registers;
    std::unordered_map<std::string, int> variables;
+
    std::stack<Vector2> jumps;
    std::stack<Token> defered;
    std::stack<int> stack;
 
    Vector2 position, direction;
+   std::string temporaryString, numberString, identifier;
+
    bool stringmode = false, outputString = false, reverseString = false;
    bool numbermode = false, hexadecimalNumber = false;
-   bool identifiermode = false, gettingVariable = false, callingFunction = false;
+   bool identifiermode = false, gettingVariable = false, callingFunction = false, gettingLabelPos = false;
    bool defermode = false;
-   std::string temporaryString, numberString, identifier;
 
    // Init commands
 

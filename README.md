@@ -19,7 +19,7 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |h|Pop from stack, if it's nonzero, set PC direction to left|0|
 |k|Pop from stack, if it's nonzero, set PC direction to up|0|
 |j|Pop from stack, if it's nonzero, set PC direction to down|0|
-|;|Advance a tile forward|0|
+|\||Advance a tile forward|0|
 |J|Pop Y and then X and jump to (X, Y)|2|
 |L|Pop Y, X and then VALUE and jump to (X, Y) if VALUE is nonzero|3|
 |R|Return to the last jump call or at the beginning of the program if all jump calls have been returned to, uses the direction used before jumping|0|
@@ -37,7 +37,7 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |=|Pop two values, if they're equal, push 1, else 0|2|
 |"|Toggle string mode, if string mode is active push all commands as characters to stack|0|
 |r|Toggle reverse string mode, if reverse string mode is active, push characters to stack in reverse order|0|
-|:|Duplicate top stack value|1|
+|H|Duplicate top stack value|1|
 | \\ |Swap the top two stack values|2|
 |q|Pop the top stack value|0|
 |E|Terminate the program|0|
@@ -65,6 +65,8 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |#|Enter identifiermode, create a new variable and assign a popped value. Variables can include all alpha-numerical characters including underscores|1|
 |@|Enter identifiermode, get the value from the given variable|0| 
 |%|Enter identifiermode, call the function with the given identifier|0|
+|:|Define a label. Labels can only be defined from left to right since they get defined during lexing phase|0|
+|;|Enter identifiermode and push the position of the label to the stack|0|
 
 ## Functions
 Functions are esentially commands that use more characters. They can be called using the % operator.
@@ -114,3 +116,4 @@ Functions are esentially commands that use more characters. They can be called u
 |logdefer|Log all defer stack commands|0|
 |logregs|Log all accessed registers|0|
 |logvars|Log all variables and their values|0|
+|loglabels|Log all labels and their positions|0|

@@ -25,6 +25,9 @@ Interpreter::Interpreter() {
 void Interpreter::lex(const std::string &code) {
    Vector2 lexPosition;
 
+   bool isLexingLabel = false;
+   std::string label;
+
    for (size_t i = 0; i < code.size(); ++i) {
       char character = code[i];
 
@@ -34,7 +37,18 @@ void Interpreter::lex(const std::string &code) {
          continue;
       }
 
-      map[lexPosition] = lexCommand(character);
+      if (character == ':') {
+         isLexingLabel = true;
+      } else if (isLexingLabel && (std::isalnum(character) || character == '_')) {
+         label += character;
+      } else {
+         if (isLexingLabel) {
+            labels[label] = lexPosition;
+            label.clear();
+            isLexingLabel = false;
+         }
+         map[lexPosition] = lexCommand(character);
+      }
       lexPosition.x += 1;
    }
 }
@@ -69,6 +83,11 @@ void Interpreter::runCommand(Token command) {
       } else if (callingFunction) {
          assert(functions.contains(identifier), "Built-in function '{}' is not defined.", identifier);
          functions[identifier]();
+      } else if (gettingLabelPos) {
+         assert(labels.contains(identifier), "Label '{}' is not defined.", identifier);
+         Vector2 &position = labels[identifier];
+         push(position.x);
+         push(position.y);
       } else {
          // Stack size checked in Token::define command
          int a = pop();

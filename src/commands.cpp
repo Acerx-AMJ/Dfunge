@@ -12,23 +12,23 @@
 
 // Unused characters
 //                             (  )  _
-//    wW e        yY uU     O  P  [{ }]  |
-// aA       fF     H     K
+//    wW e        yY uU     O  P  [{ }]
+// aA       fF           K
 // zZ    cC  V bB    mM        ?
 
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
-   {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {'l', Token::rightCondition}, {'h', Token::leftCondition}, {'k', Token::upCondition}, {'j', Token::downCondition}, {';', Token::bridge},
+   {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {'l', Token::rightCondition}, {'h', Token::leftCondition}, {'k', Token::upCondition}, {'j', Token::downCondition}, {'|', Token::bridge},
    {'J', Token::jump}, {'L', Token::jumpCondition}, {'R', Token::return_},
    {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
    {'!', Token::logical_not}, {'G', Token::greaterThan}, {'=', Token::equals},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
-   {':', Token::duplicate}, {'\\', Token::swap}, {'q', Token::pop}, {'E', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
+   {'H', Token::duplicate}, {'\\', Token::swap}, {'q', Token::pop}, {'E', Token::terminate}, {'g', Token::getRegister}, {'p', Token::putRegister},
    {'.', Token::outputInteger}, {',', Token::outputAscii}, {'o', Token::outputString},
    {'`', Token::integerInput}, {'~', Token::asciiInput}, {'&', Token::stringInput},
    {'$', Token::defer}, {'X', Token::deferRun}, {'x', Token::deferRunOne}, {'T', Token::deferGet}, {'N', Token::deferPush}, {'D', Token::deferDuplicate}, {'I', Token::deferSwap}, {'Q', Token::deferPop}, {'S', Token::deferSize},
    {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize},
-   {'#', Token::define}, {'@', Token::getVariable}, {'%', Token::callFunction},
+   {'#', Token::define}, {'@', Token::getVariable}, {'%', Token::callFunction}, {';', Token::getLabelPos}
 };
 
 // Init commands
@@ -348,14 +348,18 @@ void Interpreter::initCommands() {
    commands[Token::define] = [this](char value) {
       assertStackSize(1, value);
       identifiermode = true;
-      gettingVariable = callingFunction = false;
+      gettingVariable = callingFunction = gettingLabelPos = false;
    };
    commands[Token::getVariable] = [this](char) {
       identifiermode = gettingVariable = true;
-      callingFunction = false;
+      callingFunction = gettingLabelPos = false;
    };
    commands[Token::callFunction] = [this](char) {
       identifiermode = callingFunction = true;
-      gettingVariable = false;
+      gettingVariable = gettingLabelPos = false;
+   };
+   commands[Token::getLabelPos] = [this](char) {
+      identifiermode = gettingLabelPos = true;
+      gettingVariable = callingFunction = false;
    };
 }
