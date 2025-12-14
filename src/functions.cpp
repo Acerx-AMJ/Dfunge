@@ -4,9 +4,10 @@
 #include <ctime>
 #include <filesystem>
 #include <fstream>
+#include <thread>
 
 void Interpreter::initFunctions() {
-   // Math utility functions
+   // Utility functions
 
    functions["abs"] = [this]() {
       assertStackSize(1, "abs");
@@ -48,6 +49,13 @@ void Interpreter::initFunctions() {
       }
       push((a < lo ? lo : (a > hi ? hi : a)));
    };
+   functions["wait"] = [this]() {
+      assertStackSize(1, "wait");
+      std::this_thread::sleep_for(std::chrono::milliseconds(pop()));
+   };
+   
+   // Math functions
+
    functions["mod"] = [this]() {
       assertStackSize(2, "mod");
       int mod = pop();
@@ -64,9 +72,6 @@ void Interpreter::initFunctions() {
       }
       push((negativeCount == 1 ? -1 : 1) * (value % mod));
    };
-   
-   // Math functions
-
    functions["pow"] = [this]() {
       assertStackSize(2, "pow");
       int power = pop();

@@ -1,7 +1,8 @@
-> '100? #randomNumber 01J
-> o"Guess the number 0-100: "` #guess 02J
-> @guess @randomNumber =j @guess @randomNumber Gj 06J
-                     J40<                    J50<
-> o"You guessed correctly!"t, o"Play again [y/n]: "~:,t, "y"=jE
-> o"Too high!"t, 01J                                      J00<
-> o"Too low!"t, 01J
+:main  '100 %randint #num ;guess
+:guess o"Guess the number 0-100: "` #guess ;eval
+:eval  @guess @num =j @guess @num Gj ;toolow
+                    > ;correct     > ;toohigh
+
+:correct o"You guessed correctly!"t, o"Play again [y/n]: "~H,t, "y"=jE
+:toolow  o"Too low!"t,  ;guess                                      >;main
+:toohigh o"Too high!"t, ;guess

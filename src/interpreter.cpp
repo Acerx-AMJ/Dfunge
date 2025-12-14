@@ -85,9 +85,14 @@ void Interpreter::runCommand(Token command) {
          functions[identifier]();
       } else if (gettingLabelPos) {
          assert(labels.contains(identifier), "Label '{}' is not defined.", identifier);
-         Vector2 &position = labels[identifier];
-         push(position.x);
-         push(position.y);
+
+         jumps.push(direction);
+         jumps.push(position);
+         
+         Vector2 &newPosition = labels[identifier];
+         position = newPosition;
+         direction = {1, 0};
+         back();
       } else {
          // Stack size checked in Token::define command
          int a = pop();

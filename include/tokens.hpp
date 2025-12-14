@@ -4,8 +4,7 @@
 struct Token {
    enum Type: char {
       invalid, empty,
-      right, left, up, down, rightCondition, leftCondition, upCondition, downCondition, bridge,
-      jump, jumpCondition, return_,
+      right, left, up, down, rightCondition, leftCondition, upCondition, downCondition, bridge, return_,
       add, subtract, multiply, divide, increment, decrement, negate,
       logical_not, greaterThan, equals,
       stringmode, reverseStringMode,
@@ -14,7 +13,7 @@ struct Token {
       integerInput, asciiInput, stringInput,
       defer, deferRun, deferRunOne, deferGet, deferPush, deferDuplicate, deferSwap, deferPop, deferSize,
       number, ten, numbermode, getStackSize,
-      define, getVariable, callFunction, getLabelPos
+      define, getVariable, callFunction, jumpToLabel
    };
 
    Type type = Type::empty;
@@ -33,7 +32,7 @@ constexpr const char *tokenTypeStrings[] {
    "IntegerInput", "ASCIIInput", "StringInput",
    "Defer", "DeferRun", "DeferRunOne", "DeferGet", "DeferPush", "DeferDuplicate", "DeferSwap", "DeferPop", "DeferSize",
    "Number", "Ten", "Numbermode", "GetStackSize",
-   "Define", "GetVariable", "CallFunction", "GetLabelPosition"
+   "Define", "GetVariable", "CallFunction", "JumpToLabel"
 };
 
 #endif

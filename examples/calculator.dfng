@@ -1,6 +1,9 @@
-> 01J #num1 01J #num2 02J #op 03J E
-> o"Input a number: " `R
-> o"Input the command (+, -, *, /, % or P): " ~:,t,R
-> @op "+":=jq @op "-":=jq @op "*":=jq @op "/":=jq @op "%":=jq @op "P":=jq o"Invalid command."t, E
-           >           >           >           >           >           > 05J
-> :T @num1. o" ", o" " @num2. o" = " @num1 @num2 x. t,E
+;inputnum #num1 ;inputnum #num2 ;inputop #op ;handleop E
+
+:inputnum o"Input a number: "` R
+:inputop  o"Input the command (+, -, *, /): " ~H,t, R
+
+:handleop @op "+"H=jq @op "-"H=jq @op "*"H=jq "/"H=jq o"Invalid command."t, R
+                   >           >           >       > ;getresult R
+
+:getresult HT @num1. o" ",o" " @num2. o" = " @num1 @num2 x. t, R

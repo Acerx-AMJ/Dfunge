@@ -1,5 +1,5 @@
 # Dfunge
-Dfunge is a successor to Cfunge, which is a 2D esoteric programming language based off Befunge-93. There are various examples available in the examples folder. Some are outdated, though.
+Dfunge is a successor to Cfunge, which is a 2D esoteric programming language based off Befunge-93. There are various examples available in the examples folder. Some might be outdated, though.
 
 ## Language Overview
 Dfunge is laid out on a two-dimensional playground, just like Befunge-93. The playfield is practically infinite in size (-2147483648 to 2147483647 on both axes). The program counter starts at (0, 0) and is pointed to the right. Just like in Befunge-93, the program counter has inertia, meaning that it will continue moving in a specific direction until it is changed, but it does not wrap around when it reaches a limit. When the program counter lands on a command, it gets executed.
@@ -20,8 +20,6 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |k|Pop from stack, if it's nonzero, set PC direction to up|0|
 |j|Pop from stack, if it's nonzero, set PC direction to down|0|
 |\||Advance a tile forward|0|
-|J|Pop Y and then X and jump to (X, Y)|2|
-|L|Pop Y, X and then VALUE and jump to (X, Y) if VALUE is nonzero|3|
 |R|Return to the last jump call or at the beginning of the program if all jump calls have been returned to, uses the direction used before jumping|0|
 |+|Pop two values, add them together and push result to stack|2|
 |-|Pop A, then B, subtract A from B and push result to stack|2|
@@ -66,12 +64,12 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |@|Enter identifiermode, get the value from the given variable|0| 
 |%|Enter identifiermode, call the function with the given identifier|0|
 |:|Define a label. Labels can only be defined from left to right since they get defined during lexing phase|0|
-|;|Enter identifiermode and push the position of the label to the stack|0|
+|;|Enter identifiermode and jump to the position of the label to the stack|0|
 
 ## Functions
 Functions are esentially commands that use more characters. They can be called using the % operator.
 
-### Math Utility Functions
+### Utility Functions
 |Function|Description|Expected stack size|
 |-|-|-|
 |abs|Get the absolute value of a popped value|1|
@@ -80,11 +78,12 @@ Functions are esentially commands that use more characters. They can be called u
 |max|Pop two values and return the largest of them|2|
 |clamp|Pop HI, LO and V and clamp V in the range [LO, HI]|3|
 |sclamp|Same as clamp, but changes HI with LO if LO is bigger than HI|3|
-|mod|Pop A and B and perform modulus|2|
+|wait|Pop a value and pause execution for that many milliseconds|1|
 
 ### Math Functions
 |Function|Description|Expected stack size|
 |-|-|-|
+|mod|Pop A and B and perform modulus|2|
 |pow|Pop POWER, then BASE and raise BASE to the power of POWER|2|
 
 ### Random Functions

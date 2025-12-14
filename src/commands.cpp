@@ -10,16 +10,9 @@
 
 // Globals
 
-// Unused characters
-//                             (  )  _
-//    wW e        yY uU     O  P  [{ }]
-// aA       fF           K
-// zZ    cC  V bB    mM        ?
-
 std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {' ', Token::empty},
-   {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {'l', Token::rightCondition}, {'h', Token::leftCondition}, {'k', Token::upCondition}, {'j', Token::downCondition}, {'|', Token::bridge},
-   {'J', Token::jump}, {'L', Token::jumpCondition}, {'R', Token::return_},
+   {'>', Token::right}, {'<', Token::left}, {'^', Token::up}, {'v', Token::down}, {'l', Token::rightCondition}, {'h', Token::leftCondition}, {'k', Token::upCondition}, {'j', Token::downCondition}, {'|', Token::bridge}, {'R', Token::return_},
    {'+', Token::add}, {'-', Token::subtract}, {'*', Token::multiply}, {'/', Token::divide}, {'i', Token::increment}, {'d', Token::decrement}, {'n', Token::negate},
    {'!', Token::logical_not}, {'G', Token::greaterThan}, {'=', Token::equals},
    {'"', Token::stringmode}, {'r', Token::reverseStringMode},
@@ -28,7 +21,7 @@ std::unordered_map<char, Token::Type> Interpreter::tokenTypes {
    {'`', Token::integerInput}, {'~', Token::asciiInput}, {'&', Token::stringInput},
    {'$', Token::defer}, {'X', Token::deferRun}, {'x', Token::deferRunOne}, {'T', Token::deferGet}, {'N', Token::deferPush}, {'D', Token::deferDuplicate}, {'I', Token::deferSwap}, {'Q', Token::deferPop}, {'S', Token::deferSize},
    {'t', Token::ten}, {'\'', Token::numbermode}, {'s', Token::getStackSize},
-   {'#', Token::define}, {'@', Token::getVariable}, {'%', Token::callFunction}, {';', Token::getLabelPos}
+   {'#', Token::define}, {'@', Token::getVariable}, {'%', Token::callFunction}, {';', Token::jumpToLabel}
 };
 
 // Init commands
@@ -78,31 +71,6 @@ void Interpreter::initCommands() {
 
    // Jump commands
 
-   commands[Token::jump] = [this](char value) {
-      assertStackSize(2, value);
-      int y = pop();
-      int x = pop();
-
-      jumps.push(direction);
-      jumps.push(position);
-
-      position = {x, y};
-      back();
-   };
-   commands[Token::jumpCondition] = [this](char value) {
-      assertStackSize(3, value);
-      int y = pop();
-      int x = pop();
-      int condition = pop();
-
-      if (condition) {
-         jumps.push(direction);
-         jumps.push(position);
-
-         position = {x, y};
-         back();
-      }
-   };
    commands[Token::return_] = [this](char) {
       if (jumps.empty()) {
          position = {-1, 0};
@@ -358,7 +326,7 @@ void Interpreter::initCommands() {
       identifiermode = callingFunction = true;
       gettingVariable = gettingLabelPos = false;
    };
-   commands[Token::getLabelPos] = [this](char) {
+   commands[Token::jumpToLabel] = [this](char) {
       identifiermode = gettingLabelPos = true;
       gettingVariable = callingFunction = false;
    };

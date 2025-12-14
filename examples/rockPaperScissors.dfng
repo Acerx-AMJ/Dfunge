@@ -1,9 +1,9 @@
-> 2? #bot o"Rock (0), paper (1) or scissors (2): "` #player @player 0=j @player 1=j @player 2=j o"Invalid input, please try again."t, 00J
-                                                                   J20<           <           <
-> o"Rock..."t, o"Paper..."t, o"Scissors..."t,t, o"You: " @player 03J o"Bot: " @bot 03J 07J
-> :0=j          1=j            v
-     >o"Rock"t,qR >o"Paper"t,R >o"Scissors"t,R
-                                      >                    >                    v
-                         >@player 0=!j^       >@player 2=!j^       >@player 1=!j> o"Bot won!"   v
-> @bot @player =j @bot 1=k           > @bot 0=k           > @bot 2=k           >> o"Player won!"> t, o"Play again [y/n]: "~:,t, "y"=jE
-                >                                                               > o"It's a tie!"^                                J00<
+:main 2 %randint #bot o"Rock (0), paper (1) or scissors (2): "` #plr @plr 0=j @plr 1=j @plr 2=j o"Invalid input, please try again."t, ;main
+                                                                            >        >        > ;play
+:play '500 %wait o"Rock..."t, '750 %wait o"Paper..."t, '1000 %wait o"Scissors..."t,t, o"You: " @plr ;print o"Bot: " @bot ;print t, ;eval
+:print H0=j          1=j            v
+          >o"Rock"t,qR >o"Paper"t,R >o"Scissors"t,R
+                                    >                 >                 v
+                          >@plr 0=!j^       >@plr 2=!j^       >@plr 1=!j> o"You lost..."v
+:eval @bot @plr =j @bot 1=k        > @bot 0=k        > @bot 2=k        >> o"You won!"   > t, o"Play again [y/n]: "~H,t, "y"=jE
+                 >                                                      > o"It's a tie!"^                                   >;main
