@@ -1,4 +1,6 @@
 # Dfunge
+![Hello Dfunge](dfunge.png)
+
 Dfunge is a successor to Cfunge, which is a 2D esoteric programming language based off Befunge-93. There are various examples available in the examples folder. Some might be outdated, though.
 
 ## Language Overview
@@ -25,8 +27,6 @@ Command names are case-sensitive. If stack size is less than the expected stack 
 |-|Pop A, then B, subtract A from B and push result to stack|2|
 |*|Pop two values, multiply them together and push result to stack|2|
 |/|Pop A, then B, perform integer division on B by A and push result to stack|2|
-|M|Pop A, then B, perform integer division on B by A and push the remainder to stack|2|
-|P|Pop A, then B, exponentiate B to the power of A and push the result to stack|2|
 |i|Pop a value, increment it by one and push it back to stack|1|
 |d|Pop a value, decrement it by one and push it back to stack|1|
 |n|Pop a value, negate it and push it back to stack|1|
